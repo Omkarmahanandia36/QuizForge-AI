@@ -1,0 +1,24 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environments
+.env
+.venv/
+venv/
+ENV/
+env/
+
+# Node modules and build output
+node_modules/
+dist/
+build/
+.vite/
+
+# Local IDE/OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
