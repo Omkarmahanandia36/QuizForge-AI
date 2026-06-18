@@ -1,8 +1,7 @@
 {
   "outputDirectory": "frontend/dist",
   "functions": {
-    "api/index.py": {
-      "runtime": "@vercel/python",
+    "api/**/*.py": {
       "maxDuration": 60
     }
   },
