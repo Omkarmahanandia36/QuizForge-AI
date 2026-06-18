@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 
+const API_BASE = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+  ? "http://localhost:8000"
+  : "";
+
 export default function QuizApp() {
   // Application states: 'upload' | 'loading' | 'quiz' | 'results'
   const [view, setView] = useState("upload");
@@ -127,7 +131,7 @@ export default function QuizApp() {
     formData.append("num_5_mark", fiveMarkCount);
 
     try {
-      const response = await fetch("http://localhost:8000/api/generate-quiz", {
+      const response = await fetch(`${API_BASE}/api/generate-quiz`, {
         method: "POST",
         body: formData,
       });
@@ -215,7 +219,7 @@ export default function QuizApp() {
   // Call backend to download generated PDF
   const downloadPdf = async (includeAnswers = true) => {
     try {
-      const response = await fetch("http://localhost:8000/api/download-pdf", {
+      const response = await fetch(`${API_BASE}/api/download-pdf`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
