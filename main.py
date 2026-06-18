@@ -36,6 +36,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/api/health")
+async def health_check():
+    return {"status": "ok"}
+
 # Pydantic Schemas
 class QuizOption(BaseModel):
     A: str = Field(..., description="Option A text")

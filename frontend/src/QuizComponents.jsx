@@ -137,8 +137,19 @@ export default function QuizApp() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || "Server failed to process the PDF.");
+        let errorMsg = "Server failed to process the PDF.";
+        try {
+          const errorData = await response.json();
+          errorMsg = errorData.detail || errorMsg;
+        } catch (e) {
+          try {
+            const text = await response.text();
+            errorMsg = text || errorMsg;
+          } catch (textErr) {
+            errorMsg = "Server returned an error that could not be read.";
+          }
+        }
+        throw new Error(errorMsg);
       }
 
       const data = await response.json();
