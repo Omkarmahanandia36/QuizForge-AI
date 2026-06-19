@@ -468,63 +468,61 @@ export default function QuizApp() {
 
         {/* VIEW 2: LOADING OVERLAY */}
         {view === "loading" && (
-          <div className="flex flex-col items-center justify-center py-12 text-center space-y-8">
-            <div className="relative flex items-center justify-center w-24 h-24">
-              <div className="absolute w-24 h-24 border-4 border-slate-800 rounded-full"></div>
-              <div className="absolute w-24 h-24 border-4 border-t-indigo-500 border-r-indigo-500 rounded-full animate-spin"></div>
-              <div className="absolute w-12 h-12 bg-indigo-500/10 rounded-full blur-xl"></div>
-            </div>
-
+          <div className="flex flex-col items-center justify-center py-8 text-center">
             {!loadingError ? (
-              <div className="space-y-4 max-w-sm w-full">
-                <h3 className="text-xl font-semibold text-slate-100">Analyzing & Forging Quiz...</h3>
-                <p className="text-slate-400 text-sm">This may take up to 25 seconds as models process the PDF sequentially.</p>
-                
-                <div className="mt-6 space-y-3 text-left">
-                  {/* Step 1 */}
-                  <div className="flex items-center gap-3">
-                    <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                      loadingStep === 1
-                        ? "bg-indigo-500 text-white animate-pulse"
-                        : loadingStep > 1
-                        ? "bg-emerald-500 text-slate-950"
-                        : "bg-slate-800 text-slate-500"
-                    }`}>
-                      {loadingStep > 1 ? "✓" : "1"}
+              <div className="flex flex-col items-center justify-center space-y-8 w-full max-w-md">
+                {/* Holographic Radar & Scanner Animation */}
+                <div className="relative w-48 h-48 flex items-center justify-center">
+                  <div className="absolute inset-0 border border-indigo-500/20 rounded-full animate-ping [animation-duration:3s]"></div>
+                  <div className="absolute w-40 h-40 border border-violet-500/30 rounded-full animate-pulse"></div>
+                  <div className="absolute w-32 h-32 border-2 border-dashed border-indigo-400/40 rounded-full animate-spin [animation-duration:15s]"></div>
+                  
+                  {/* Glowing Floating Document Sheet */}
+                  <div className="absolute w-24 h-32 bg-slate-950/80 border border-indigo-500/50 rounded-lg shadow-[0_0_25px_rgba(99,102,241,0.25)] overflow-hidden flex flex-col justify-between p-3 animate-float">
+                    {/* Scanning Laser Line */}
+                    <div className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_12px_#22d3ee] animate-scan"></div>
+                    
+                    {/* Content lines on sheet */}
+                    <div className="w-full space-y-2 mt-2">
+                      <div className="h-2 w-10/12 bg-slate-800 rounded-full"></div>
+                      <div className="h-2 w-full bg-slate-800 rounded-full"></div>
+                      <div className="h-2 w-8/12 bg-slate-800 rounded-full"></div>
+                      <div className="h-2 w-11/12 bg-slate-800 rounded-full"></div>
                     </div>
-                    <span className={`text-sm ${loadingStep === 1 ? "text-indigo-400 font-semibold" : loadingStep > 1 ? "text-slate-400" : "text-slate-600"}`}>
-                      Stage 1: Extracting questions with Gemini…
-                    </span>
+                    
+                    {/* Decorative scanner status */}
+                    <div className="flex items-center justify-between mt-auto">
+                      <div className="w-2 h-2 rounded-full bg-indigo-500/80 animate-ping"></div>
+                      <div className="h-1.5 w-12 bg-indigo-500/40 rounded-full"></div>
+                    </div>
                   </div>
+                </div>
 
-                  {/* Step 2 */}
-                  <div className="flex items-center gap-3">
-                    <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                      loadingStep === 2
-                        ? "bg-indigo-500 text-white animate-pulse"
-                        : loadingStep > 2
-                        ? "bg-emerald-500 text-slate-950"
-                        : "bg-slate-800 text-slate-500"
-                    }`}>
-                      {loadingStep > 2 ? "✓" : "2"}
-                    </div>
-                    <span className={`text-sm ${loadingStep === 2 ? "text-indigo-400 font-semibold" : loadingStep > 2 ? "text-slate-400" : "text-slate-600"}`}>
-                      Stage 2: Elaborating explanations with Groq / Gemini…
+                {/* Status Message & Info */}
+                <div className="text-center space-y-2 px-4">
+                  <h3 className="text-2xl font-bold tracking-wide bg-gradient-to-r from-cyan-400 via-indigo-400 to-violet-400 bg-clip-text text-transparent animate-pulse">
+                    Forging Interactive Quiz...
+                  </h3>
+                  <p className="text-slate-400 text-sm max-w-xs mx-auto">
+                    Scanning your document and crafting optimized questions. This takes about 15–20 seconds.
+                  </p>
+                </div>
+
+                {/* Progress Bar with current phase */}
+                <div className="w-64 space-y-2">
+                  <div className="flex justify-between text-xs text-indigo-400 font-semibold px-0.5">
+                    <span>
+                      {loadingStep === 1 && "Extracting content..."}
+                      {loadingStep === 2 && "Elaborating details..."}
+                      {loadingStep === 3 && "Polishing formatting..."}
                     </span>
+                    <span>{loadingStep * 33}%</span>
                   </div>
-
-                  {/* Step 3 */}
-                  <div className="flex items-center gap-3">
-                    <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                      loadingStep === 3
-                        ? "bg-indigo-500 text-white animate-pulse"
-                        : "bg-slate-800 text-slate-500"
-                    }`}>
-                      3
-                    </div>
-                    <span className={`text-sm ${loadingStep === 3 ? "text-indigo-400 font-semibold" : "text-slate-600"}`}>
-                      Stage 3: Validating schema with Groq / Gemini…
-                    </span>
+                  <div className="h-2 w-full bg-slate-950 rounded-full overflow-hidden border border-slate-800/80">
+                    <div
+                      className="h-full bg-gradient-to-r from-cyan-500 via-indigo-500 to-violet-500 rounded-full shadow-[0_0_8px_rgba(99,102,241,0.5)] transition-all duration-1000 ease-out"
+                      style={{ width: `${loadingStep * 33}%` }}
+                    ></div>
                   </div>
                 </div>
               </div>
