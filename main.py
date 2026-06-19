@@ -101,7 +101,6 @@ async def run_pipeline(temp_file_path: str, num_mcq: int, num_1_mark: int, num_2
     load_env_file()
     
     gemini_key = os.environ.get("GEMINI_API_KEY")
-    cerebras_key = os.environ.get("CEREBRAS_API_KEY")
     openrouter_key = os.environ.get("OPENROUTER_API_KEY")
     groq_key = os.environ.get("GROQ_API_KEY")
 
@@ -190,7 +189,7 @@ Format the output strictly as a JSON array like this:
         raise ValueError("Stage 1 returned an empty response.")
 
     # ==========================================
-    # STAGE 2: ELABORATION (Cerebras with fallbacks)
+    # STAGE 2: ELABORATION (Groq with Gemini fallback)
     # ==========================================
     logger.info("Starting Stage 2: Elaboration...")
     stage2_json_str = ""
@@ -206,29 +205,8 @@ Input JSON:
 {stage1_json_str}
 """
 
-    # 1. Try Cerebras
-    if cerebras_key:
-        try:
-            logger.info("Attempting elaboration with Cerebras (llama3.3-70b)...")
-            client_cerebras = AsyncOpenAI(
-                base_url="https://api.cerebras.ai/v1",
-                api_key=cerebras_key
-            )
-            response_cerebras = await client_cerebras.chat.completions.create(
-                model="llama3.3-70b",
-                messages=[
-                    {"role": "system", "content": "You are a precise JSON formatting assistant that outputs raw JSON arrays and preserves input fields."},
-                    {"role": "user", "content": prompt_stage2}
-                ],
-                temperature=0.2
-            )
-            stage2_json_str = response_cerebras.choices[0].message.content
-            logger.info("Stage 2 elaboration with Cerebras successful.")
-        except Exception as cerebras_err:
-            logger.warning(f"Cerebras elaboration failed: {str(cerebras_err)}. Trying fallback...")
-
-    # 2. Try Groq
-    if not stage2_json_str and groq_key:
+    # 1. Try Groq
+    if groq_key:
         try:
             logger.info("Attempting elaboration with Groq (llama-3.3-70b-versatile)...")
             client_groq = AsyncOpenAI(
@@ -248,7 +226,7 @@ Input JSON:
         except Exception as groq_err:
             logger.warning(f"Groq elaboration failed: {str(groq_err)}. Trying fallback...")
 
-    # 3. Try Gemini
+    # 2. Try Gemini
     if not stage2_json_str:
         try:
             logger.info("Attempting elaboration with Gemini (gemini-2.5-flash) fallback...")

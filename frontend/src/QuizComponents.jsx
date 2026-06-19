@@ -139,9 +139,15 @@ export default function QuizApp() {
       if (!response.ok) {
         let errorMsg = "Server failed to process the PDF.";
         try {
-          const errorData = await response.json();
-          errorMsg = errorData.detail || errorMsg;
-        } catch (e) {
+          const clonedResponse = response.clone();
+          try {
+            const errorData = await response.json();
+            errorMsg = errorData.detail || errorMsg;
+          } catch (e) {
+            const text = await clonedResponse.text();
+            errorMsg = text || errorMsg;
+          }
+        } catch (cloneErr) {
           try {
             const text = await response.text();
             errorMsg = text || errorMsg;
@@ -503,7 +509,7 @@ export default function QuizApp() {
                       {loadingStep > 2 ? "✓" : "2"}
                     </div>
                     <span className={`text-sm ${loadingStep === 2 ? "text-indigo-400 font-semibold" : loadingStep > 2 ? "text-slate-400" : "text-slate-600"}`}>
-                      Stage 2: Elaborating explanations with Cerebras…
+                      Stage 2: Elaborating explanations with Groq / Gemini…
                     </span>
                   </div>
 
@@ -517,7 +523,7 @@ export default function QuizApp() {
                       3
                     </div>
                     <span className={`text-sm ${loadingStep === 3 ? "text-indigo-400 font-semibold" : "text-slate-600"}`}>
-                      Stage 3: Validating schema with OpenRouter…
+                      Stage 3: Validating schema with Groq / Gemini…
                     </span>
                   </div>
                 </div>
